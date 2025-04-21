@@ -1,3 +1,10 @@
+<%-- 
+    Document   : login.jsp
+    Created on : 21 abr 2025, 18:52:14
+    Author     : wilme
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión | Cineplanet</title>
-    <link rel="stylesheet" href="styles_log.css">
+    <link rel="stylesheet" href="./styles_log.css">
 </head>
 
 <body>

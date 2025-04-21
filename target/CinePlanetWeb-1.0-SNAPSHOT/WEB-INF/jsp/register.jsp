@@ -1,3 +1,10 @@
+<%-- 
+    Document   : register
+    Created on : 21 abr 2025, 18:55:05
+    Author     : wilme
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
