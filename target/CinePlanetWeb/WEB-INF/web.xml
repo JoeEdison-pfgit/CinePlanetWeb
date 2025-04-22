@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee                          https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <!-- Nombre de la aplicación -->
+    <display-name>CinePlanetWeb</display-name>
+    <!-- Sesiones caducan tras 30 minutos inactivas -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <!-- Al entrar a / → invoca el servlet /login -->
+    <welcome-file-list>
+        <!-- Cuando accedas a /CinePlanetWeb/, Tomcat carga index.jsp -->
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- LoginServlet -->
+    <servlet>
+      <servlet-name>LoginServlet</servlet-name>
+      <servlet-class>com.cineplanet.controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>LoginServlet</servlet-name>
+      <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <!-- RegisterServlet (si lo necesitas) -->
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.cineplanet.controller.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <!-- CarteleraServlet -->
+    <servlet>
+        <servlet-name>CarteleraServlet</servlet-name>
+        <servlet-class>com.cineplanet.controller.CarteleraServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CarteleraServlet</servlet-name>
+        <url-pattern>/cartelera</url-pattern>
+    </servlet-mapping>
+    <!-- Filtro de encoding UTF-8 para todas las URL -->
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignore</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- Configuración JSP -->
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <scripting-invalid>true</scripting-invalid>
+        </jsp-property-group>
+    </jsp-config>
+    <!-- Página de error genérico -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
+</web-app>

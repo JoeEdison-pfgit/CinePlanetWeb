@@ -2,55 +2,39 @@ package com.cineplanet.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-/**
- * Entidad JPA que representa un usuario del sistema.
- */
 @Entity
-@Table(name = "users")
+@Table(name = "usuario")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Integer id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String username;
+    @Column(name = "nombre", nullable = false, length = 100)
+    private String nombre;
 
-    @Column(nullable = false, length = 255)
-    private String password; // En producción debe almacenarse el hash
+    @Column(name = "email", nullable = false, unique = true, length = 120)
+    private String email;
+    
+    @Column(name = "telefono", nullable = false, unique = false, length = 9)
+    private String telefono;
 
-    /** Constructor por defecto requerido por JPA. */
-    public User() {
-    }
+    @Column(name = "password", nullable = false, length = 60)
+    private String password; // aquí almacenarás el hash
 
-    /**
-     * Constructor sin ID (para creación de nuevos usuarios).
-     * @param username nombre de usuario
-     * @param password contraseña (ya hasheada)
-     */
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+    public User() { }
 
-    /**
-     * Constructor completo.
-     * @param id identificador
-     * @param username nombre de usuario
-     * @param password contraseña (hasheada)
-     */
-    public User(Integer id, String username, String password) {
+    // Constructor para lectura desde la BD
+    public User(Integer id, String nombre, String email, String password) {
         this.id = id;
-        this.username = username;
+        this.nombre = nombre;
+        this.email = email;
         this.password = password;
+        this.telefono = telefono;
     }
 
     // Getters & Setters
@@ -63,26 +47,43 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNombre() {
+        return nombre;
+    }
+    
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     * Debe recibir el password ya hasheado (BCrypt, Argon2…)
+     */
     public String getPassword() {
         return password;
     }
 
-    /** 
-     * Debe recibir la contraseña ya hasheada. 
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    // equals & hashCode basados en id y username
+    // equals & hashCode basados en id y email
 
     @Override
     public boolean equals(Object o) {
@@ -90,19 +91,19 @@ public class User implements Serializable {
         if (!(o instanceof User)) return false;
         User other = (User) o;
         return Objects.equals(id, other.id)
-            && Objects.equals(username, other.username);
+            && Objects.equals(email, other.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username);
+        return Objects.hash(id, email);
     }
 
     @Override
     public String toString() {
         return "User{" +
                "id=" + id +
-               ", username='" + username + '\'' +
+               ", email='" + email + '\'' +
                '}';
     }
 }

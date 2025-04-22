@@ -1,5 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -12,32 +14,32 @@
 
 <body>
     <div class="container">
-        <form class="login-form" action="${pageContext.request.contextPath}/login" method="post">
+        <form action="${pageContext.request.contextPath}/login" method="post">
 
-            <img src="https://www.greatplacetowork.com.pe/images/certification/companies/cineplanet/logo.png" alt="Logo Cineplanet"
-                class="logo">
+            <img src="https://www.greatplacetowork.com.pe/images/certification/companies/cineplanet/logo.png"
+                 alt="Logo Cineplanet" class="logo">
             <h1>Bienvenido a Cineplanet</h1>
 
             <div class="input-group">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" placeholder="Usuario" required>
+                <label for="email" class="usuario">Correo</label>
+                <input type="text" id="email" name="email" placeholder="Correo" required>
             </div>
 
             <div class="input-group">
-                <label for="password">Contraseña</label>
+                <label for="password" class="contra">Contraseña</label>
                 <input type="password" id="password" name="password" placeholder="Contraseña" required>
             </div>
 
             <c:if test="${not empty error}">
-                <div class="error-message">
-                    ${error}
-                </div>
+                <div class="error-message">${error}</div>
             </c:if>
 
             <div class="btn-group">
                 <button type="submit" class="btn primary">Ingresar</button>
                 <button type="button" class="btn secondary"
-                    onclick="window.location.href='register.jsp'">Registrarse</button>
+                        onclick="window.location.href='${pageContext.request.contextPath}/register'">
+                    Registrarse
+                </button>
             </div>
 
         </form>

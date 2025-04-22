@@ -4,79 +4,77 @@ import com.cineplanet.dao.UserDAO;
 import com.cineplanet.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
-import javax.naming.NamingException;
+import jakarta.servlet.http.*;
 
-/**
- * Servlet encargado de mostrar y procesar el formulario de login.
- */
+import java.io.IOException;
+import java.util.Optional;
+
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
-
     private static final long serialVersionUID = 1L;
+
+    private static final String ATTR_USER     = "user";
+    private static final String JSP_LOGIN     = "/WEB-INF/jsp/login.jsp";
+    private static final String URL_CARTELERA = "/cartelera";
+
     private UserDAO userDao;
 
     @Override
     public void init() throws ServletException {
+        super.init();
         try {
             userDao = new UserDAO();
-        } catch (NamingException e) {
-            throw new ServletException("No se pudo inicializar UserDAO", e);
+        } catch (Exception e) {
+            throw new ServletException("Error inicializando UserDAO", e);
         }
     }
 
-    /**
-     * doGet: simplemente reenvía al JSP de login para mostrar el formulario.
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // Si ya está autenticado, redirigimos directamente a cartelera
-        if (req.getSession().getAttribute("user") != null) {
-            resp.sendRedirect(req.getContextPath() + "/cartelera");
+        // Si ya está autenticado, redirige a cartelera
+        if (req.getSession().getAttribute(ATTR_USER) != null) {
+            resp.sendRedirect(req.getContextPath() + URL_CARTELERA);
             return;
         }
-        // Mostrar página de login
-        req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
-           .forward(req, resp);
+        // Sino, muestra el formulario
+        req.getRequestDispatcher(JSP_LOGIN).forward(req, resp);
     }
 
-    /**
-     * doPost: recibe credenciales, valida y decide redirección o re-muestra login con error.
-     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        log("🍿 LoginServlet.doPost() invoked");
 
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        String email = Optional.ofNullable(req.getParameter("email"))
+                                  .orElse("").trim();
+        String password = Optional.ofNullable(req.getParameter("password"))
+                                  .orElse("");
+
+        // Validación de campos vacíos
+        if (email.isEmpty() || password.isEmpty()) {
+            req.setAttribute("error", "Usuario y contraseña son obligatorios");
+            req.getRequestDispatcher(JSP_LOGIN).forward(req, resp);
+            return;
+        }
 
         try {
-            User usuario = userDao.validate(username, password);
-
+            User usuario = userDao.validate(email, password);
             if (usuario != null) {
-                // Credenciales correctas
-                req.getSession().setAttribute("user", usuario);
-                resp.sendRedirect(req.getContextPath() + "/cartelera");
+                // Login correcto: guardamos en sesión y redirigimos
+                log("✔ Login exitoso para usuario=" + email);
+                HttpSession session = req.getSession();
+                session.setAttribute(ATTR_USER, usuario);
+                resp.sendRedirect(req.getContextPath() + URL_CARTELERA);
             } else {
                 // Credenciales inválidas
+                log("✘ Credenciales inválidas para usuario=" + email);
                 req.setAttribute("error", "Usuario o contraseña incorrectos");
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
-                   .forward(req, resp);
+                req.getRequestDispatcher(JSP_LOGIN).forward(req, resp);
             }
-
-        } catch (SQLException ex) {
-            // Error de BD
-            throw new ServletException("Error al validar usuario en base de datos", ex);
+        } catch (Exception ex) {
+            log("Error validando usuario", ex);
+            throw new ServletException("Error al validar usuario", ex);
         }
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "Servlet para autenticar usuarios";
     }
 }

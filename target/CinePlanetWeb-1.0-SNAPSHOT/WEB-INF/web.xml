@@ -1,54 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app 
-    xmlns="https://jakarta.ee/xml/ns/jakartaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee 
-                        https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-    version="6.0">
-
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee                          https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <!-- Nombre de la aplicación -->
     <display-name>CinePlanetWeb</display-name>
-
-    <!-- ========================= -->
-    <!--  CONFIGURACIÓN DE SESIÓN  -->
-    <!-- ========================= -->
+    <!-- Sesiones caducan tras 30 minutos inactivas -->
     <session-config>
-        <!-- Timeout de sesión en minutos -->
         <session-timeout>30</session-timeout>
     </session-config>
-
-    <!-- ========================= -->
-    <!--   PÁGINA DE BIENVENIDA     -->
-    <!-- ========================= -->
+    <!-- Al entrar a / → invoca el servlet /login -->
     <welcome-file-list>
-        <!-- Al navegar a la raíz, invoca el LoginServlet -->
+        <!-- Cuando accedas a /CinePlanetWeb/, Tomcat carga index.jsp -->
         <welcome-file>login</welcome-file>
     </welcome-file-list>
 
-    <!-- ========================= -->
-    <!--  REFERENCIA A DATASOURCE   -->
-    <!-- ========================= -->
-    <resource-ref>
-        <description>Base de datos Cineplanet</description>
-        <res-ref-name>jdbc/CineDb</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
-
-    <!-- ========================= -->
-    <!--     DEFINICIÓN DE SERVLETS -->
-    <!-- ========================= -->
-    <!-- Login -->
+    <!-- LoginServlet -->
     <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.cineplanet.controller.LoginServlet</servlet-class>
+      <servlet-name>LoginServlet</servlet-name>
+      <servlet-class>com.cineplanet.controller.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/login</url-pattern>
+      <servlet-name>LoginServlet</servlet-name>
+      <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
-    <!-- Registro -->
+    <!-- RegisterServlet (si lo necesitas) -->
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>com.cineplanet.controller.RegisterServlet</servlet-class>
@@ -57,8 +31,7 @@
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
-
-    <!-- Cartelera -->
+    <!-- CarteleraServlet -->
     <servlet>
         <servlet-name>CarteleraServlet</servlet-name>
         <servlet-class>com.cineplanet.controller.CarteleraServlet</servlet-class>
@@ -67,10 +40,7 @@
         <servlet-name>CarteleraServlet</servlet-name>
         <url-pattern>/cartelera</url-pattern>
     </servlet-mapping>
-
-    <!-- ========================= -->
-    <!--   FILTRO DE ENCODING UTF-8 -->
-    <!-- ========================= -->
+    <!-- Filtro de encoding UTF-8 para todas las URL -->
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
@@ -87,10 +57,7 @@
         <filter-name>EncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
-    <!-- ========================= -->
-    <!--       CONFIG. JSP         -->
-    <!-- ========================= -->
+    <!-- Configuración JSP -->
     <jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
@@ -98,13 +65,9 @@
             <scripting-invalid>true</scripting-invalid>
         </jsp-property-group>
     </jsp-config>
-
-    <!-- ========================= -->
-    <!--       PÁGINA DE ERROR     -->
-    <!-- ========================= -->
+    <!-- Página de error genérico -->
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
         <location>/WEB-INF/jsp/error.jsp</location>
     </error-page>
-
 </web-app>
