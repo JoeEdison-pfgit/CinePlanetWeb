@@ -1,87 +1,82 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package com.cineplanet.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.cineplanet.dao.UserDAO;
+import com.cineplanet.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 
 /**
- *
- * @author wilme
+ * Servlet encargado de mostrar y procesar el formulario de login.
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
+@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    private static final long serialVersionUID = 1L;
+    private UserDAO userDao;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            userDao = new UserDAO();
+        } catch (NamingException e) {
+            throw new ServletException("No se pudo inicializar UserDAO", e);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * doGet: simplemente reenvía al JSP de login para mostrar el formulario.
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Si ya está autenticado, redirigimos directamente a cartelera
+        if (req.getSession().getAttribute("user") != null) {
+            resp.sendRedirect(req.getContextPath() + "/cartelera");
+            return;
+        }
+        // Mostrar página de login
+        req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+           .forward(req, resp);
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * doPost: recibe credenciales, valida y decide redirección o re-muestra login con error.
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+
+        try {
+            User usuario = userDao.validate(username, password);
+
+            if (usuario != null) {
+                // Credenciales correctas
+                req.getSession().setAttribute("user", usuario);
+                resp.sendRedirect(req.getContextPath() + "/cartelera");
+            } else {
+                // Credenciales inválidas
+                req.setAttribute("error", "Usuario o contraseña incorrectos");
+                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+                   .forward(req, resp);
+            }
+
+        } catch (SQLException ex) {
+            // Error de BD
+            throw new ServletException("Error al validar usuario en base de datos", ex);
+        }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para autenticar usuarios";
+    }
 }
