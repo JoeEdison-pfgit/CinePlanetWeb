@@ -1,5 +1,7 @@
-com\cineplanet\dao\UserDAO.class
 com\cineplanet\model\User.class
-com\mycompany\cineplanetweb\resources\JakartaEE10Resource.class
 com\cineplanet\controller\LoginServlet.class
+com\cineplanet\dao\UserDAO.class
+com\cineplanet\controller\Test.class
+com\cineplanet\controller\conexion.class
+com\mycompany\cineplanetweb\resources\JakartaEE10Resource.class
 com\mycompany\cineplanetweb\JakartaRestConfiguration.class
