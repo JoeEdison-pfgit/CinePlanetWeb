@@ -11,10 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | Cineplanet</title>
-    <link 
-        rel="stylesheet" 
-        href="${pageContext.request.contextPath}/resources/styles_log.css" 
-      />
+    <link rel="stylesheet" href="/resources/css/styles_log.css">
 </head>
 <body>
     <div class="container">

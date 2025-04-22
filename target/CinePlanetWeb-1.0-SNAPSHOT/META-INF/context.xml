@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/CinePlanetWeb"/>
+<Context path="/CinePlanetWeb">
+    <Resource
+        name="jdbc/CineDb"
+        auth="Container"
+        type="javax.sql.DataSource"
+        username="tu_usuario"
+        password="tu_pass"
+        driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/cine_db?useSSL=false&amp;serverTimezone=UTC"
+        maxTotal="20"
+        maxIdle="10"
+        maxWaitMillis="-1"/>
+</Context>
